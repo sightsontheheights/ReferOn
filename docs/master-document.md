@@ -1,67 +1,105 @@
 # ReferOn Master Document
 
-Version: 0.1  
+Version: 0.2  
 Status: Draft  
 Last updated: 2026-06-18  
 Owner: ReferOn product and engineering
 
 ## 1. Purpose
 
-ReferOn is a dedicated web application for creating medical referrals from a patient's latest medical chart history. The application helps clinicians identify the likely specialty required, draft referral packages, and route those referrals to appropriate nearby specialists with availability.
+ReferOn is a proof-of-concept web application for creating medical referrals from a patient's latest medical chart history. The POC demonstrates how AI can reduce referral preparation effort, suggest the likely specialty required, and help route the referral to a nearby available specialist.
 
-The system is decision-support software. It does not diagnose, independently order care, or replace physician judgment. Every referral must be reviewed and submitted by an authorized clinician or delegated administrator according to clinic policy.
+The POC is designed for hackathon demonstration to non-technical investors, physicians, and faculty. It is not production clinical software. It uses synthetic or de-identified demonstration data, and it does not diagnose, independently order care, or replace physician judgment.
 
 ## 2. Product Goals
 
 - Reduce administrative effort required to create complete specialist referrals.
 - Use recent chart history to suggest the most relevant specialist type.
-- Allow physicians and authorized admins to manually trigger referral creation.
-- Maintain a searchable registry of self-registered specialists.
-- Match referrals to available specialists using specialty, geography, eligibility, and availability.
-- Preserve clinical accountability through review, approval, audit logs, and clear AI provenance.
+- Show a physician/admin-facing manual trigger for referral creation.
+- Show a simple specialist self-registration flow.
+- Match referrals to nearby specialists using specialty, geography, and availability.
+- Tell a clear demo story: chart review to AI suggestion to referral draft to matched specialist.
 
-## 3. Scope
+## 3. POC Strategy
 
-### 3.1 In Scope
+### 3.1 POC Hypothesis
 
-- Patient chart ingestion from a connected source or uploaded chart bundle.
+Physicians and clinic administrators lose time converting chart history into specialist referrals and finding appropriate specialists. A focused referral assistant can make that workflow visibly faster and more complete, creating business value even before deep EMR integration, identity management, and production security hardening exist.
+
+### 3.2 Demo Narrative
+
+1. A physician opens a preloaded patient chart.
+2. The physician clicks a manual "Create Referral" trigger.
+3. ReferOn summarizes the latest relevant chart history.
+4. AI predicts the likely specialty and explains why.
+5. ReferOn drafts a referral letter/package.
+6. ReferOn displays nearby available specialists on a map/list.
+7. The physician selects a specialist and sees a ready-to-send referral preview.
+
+### 3.3 POC Success Criteria
+
+- Viewers understand the business pain within the first minute.
+- The demo shows a referral draft created from chart history in under 30 seconds.
+- The AI specialty recommendation is explainable with references to chart snippets.
+- The specialist match view makes geography and availability obvious.
+- Specialist self-registration is simple enough to demonstrate live.
+- The team can clearly explain what is real, mocked, and planned next.
+
+## 4. Scope
+
+### 4.1 In Scope for POC
+
+- Preloaded synthetic or de-identified patient chart fixtures.
 - Referral draft generation using latest chart history.
 - AI-assisted specialty prediction with confidence, rationale, and source references.
-- Manual referral trigger for authorized users.
-- Referral review, edit, approve, submit, and status tracking workflows.
+- Manual referral trigger for the demo clinician/admin persona.
+- Referral preview and lightweight edit flow.
 - Specialist self-registration and profile management.
 - Specialist location capture and nearest-neighbor search.
 - Availability-aware specialist matching.
-- Role-based access control.
-- Audit logging for clinical and administrative actions.
-- API-first backend suitable for future integrations.
+- Map/list visualization of candidate specialists.
+- API-first structure where useful, without overbuilding production infrastructure.
 
-### 3.2 Out of Scope for Initial MVP
+### 4.2 Explicitly Deferred
 
+- User identity, login, RBAC, and permission management.
+- Production-grade security and compliance controls.
+- Immutable audit logging.
+- Real EMR integration.
+- Real patient data.
+- Real referral submission to clinics.
 - Direct diagnosis generation.
 - Fully autonomous referral submission without human review.
 - Billing, claims, or payment workflows.
 - Patient-facing appointment booking.
-- Cross-border regulatory handling beyond the initial deployment jurisdiction.
-- Direct write-back to all EMRs. Initial integration may be read-only or mocked.
 
-## 4. Users and Roles
+### 4.3 Future Production Scope
 
-| Role | Description | Core Capabilities |
+- User authentication, organization accounts, RBAC, and invitation flows.
+- PHI-grade security, privacy, consent, retention, and audit controls.
+- EMR integration and document ingestion from real clinical sources.
+- Referral submission channels such as fax, secure email, or direct API.
+- Specialist credential verification workflows.
+- Production observability, deployment, backups, and incident response.
+
+## 5. Demo Personas
+
+These are demo personas, not production security roles.
+
+| Persona | Description | Demo Capabilities |
 | --- | --- | --- |
-| Physician | Licensed clinician responsible for referrals | Trigger, review, edit, approve, submit referrals |
-| Admin | Authorized clinical office staff | Trigger drafts, prepare referral packages, manage statuses |
-| Specialist | External specialist or clinic representative | Self-register, manage specialty/location/availability profile |
-| System Admin | Internal operator | Manage users, verify specialists, configure system |
-| Auditor/Compliance | Compliance reviewer | Read audit trails and access reports |
+| Physician | Clinician evaluating a patient chart | Trigger AI referral, review draft, choose specialist |
+| Clinic Admin | Office staff preparing referrals | Start manual referral and prepare package preview |
+| Specialist | External specialist or clinic representative | Self-register and publish availability/location |
+| Demo Operator | Person presenting the POC | Switch between demo views and reset seed data |
 
-## 5. Core Workflows
+## 6. Core Workflows
 
-### 5.1 AI-Assisted Referral Creation
+### 6.1 AI-Assisted Referral Creation
 
-1. Physician or admin selects a patient.
+1. Demo user selects a seeded patient.
 2. User triggers "Create referral from latest chart."
-3. System retrieves the patient's latest relevant chart history.
+3. System reads the patient's latest relevant seeded chart history.
 4. AI service predicts the required specialty and produces:
    - predicted specialty,
    - confidence score,
@@ -69,206 +107,174 @@ The system is decision-support software. It does not diagnose, independently ord
    - source chart references,
    - missing information warnings.
 5. System drafts a referral package.
-6. User reviews and edits the draft.
+6. User reviews and optionally edits the draft.
 7. User selects a specialist from ranked matches.
-8. Physician approves and submits the referral.
-9. System records the audit trail and referral status.
+8. System displays a ready-to-send referral preview.
 
-### 5.2 Manual Referral Trigger
+### 6.2 Manual Referral Trigger
 
-1. Authorized user starts a referral manually.
+1. Demo user starts a referral manually.
 2. User selects patient, reason for referral, preferred specialty, urgency, and notes.
 3. System may optionally enrich the draft from chart history.
-4. Matching and approval proceed through the standard referral workflow.
+4. Matching proceeds through the same specialist ranking view.
 
-### 5.3 Specialist Self-Registration
+### 6.3 Specialist Self-Registration
 
 1. Specialist opens registration page.
-2. Specialist submits identity, license, clinic, specialty, location, contact, referral criteria, and availability.
-3. System creates an unverified specialist profile.
-4. System admin verifies credentials and approves the profile.
-5. Approved specialist becomes eligible for matching.
+2. Specialist submits name, clinic, specialty, location, contact, referral criteria, and availability.
+3. System creates a demo specialist profile.
+4. Profile becomes visible in the demo matching directory.
 
-### 5.4 Specialist Matching
+### 6.4 Specialist Matching
 
 1. System receives referral specialty, patient location, urgency, constraints, and optional preferences.
 2. System filters specialists by:
-   - verified status,
    - specialty and subspecialty,
-   - referral eligibility criteria,
    - accepting-new-referrals flag,
-   - availability window,
-   - insurance or payer constraints where applicable.
+   - availability window.
 3. System ranks candidates by:
    - distance from patient,
    - next available appointment or intake capacity,
-   - specialty fit,
-   - historical acceptance rate,
-   - referring physician preference where configured.
+   - specialty fit.
 
-## 6. Functional Requirements
+## 7. Functional Requirements
 
-### 6.1 Patient and Chart History
+### 7.1 Patient and Chart History
 
-- FR-001: The system shall store patient identity and demographic metadata required to create a referral.
-- FR-002: The system shall ingest chart history from an EMR connector, document upload, or seeded development fixture.
+- FR-001: The POC shall include seeded synthetic or de-identified patient profiles.
+- FR-002: The POC shall include seeded chart history for each demo patient.
 - FR-003: The system shall identify the latest clinically relevant chart entries for referral generation.
 - FR-004: The system shall preserve references from generated referral content back to source chart entries.
 - FR-005: The system shall show warnings when chart data is stale, incomplete, or unavailable.
 
-### 6.2 Referral Drafting
+### 7.2 Referral Drafting
 
 - FR-010: The system shall create a referral draft from patient chart history.
-- FR-011: The system shall allow authorized users to create a referral manually.
+- FR-011: The system shall allow demo users to create a referral manually.
 - FR-012: The system shall support referral fields including reason, specialty, urgency, history, medications, allergies, investigations, attachments, and notes.
-- FR-013: The system shall allow physicians and admins to edit drafts before submission.
-- FR-014: The system shall require physician approval before final submission unless clinic policy explicitly permits delegated submission.
-- FR-015: The system shall maintain referral status values: draft, pending_review, approved, submitted, accepted, declined, completed, cancelled.
+- FR-013: The system shall allow users to edit drafts before preview.
+- FR-014: The POC shall show a ready-to-send preview but shall not submit real referrals.
+- FR-015: The system shall maintain lightweight referral status values: draft, previewed, selected_specialist.
 
-### 6.3 AI Specialty Prediction
+### 7.3 AI Specialty Prediction
 
 - FR-020: The system shall predict the most likely required specialty from chart history.
 - FR-021: The system shall return confidence and rationale with each AI prediction.
 - FR-022: The system shall expose chart references used by AI-generated suggestions.
 - FR-023: The system shall allow users to override AI-predicted specialty.
-- FR-024: The system shall log AI model version, prompt/template version, input references, output, and user overrides.
+- FR-024: The POC shall display enough AI provenance for the demo, including source snippets and model/prompt label where practical.
 - FR-025: The system shall avoid presenting AI output as diagnosis or final clinical decision.
 
-### 6.4 Specialist Registry
+### 7.4 Specialist Registry
 
 - FR-030: The system shall allow specialists to self-register.
-- FR-031: The system shall require specialist profile verification before matching.
-- FR-032: The system shall capture specialty, subspecialty, license number, clinic name, service locations, contact methods, accepted referral types, and availability.
+- FR-031: The POC shall immediately show registered specialists in the demo directory.
+- FR-032: The system shall capture specialty, subspecialty, clinic name, service locations, contact methods, accepted referral types, and availability.
 - FR-033: The system shall allow specialists to update availability and accepting-referrals status.
-- FR-034: The system shall allow system admins to approve, reject, suspend, and reactivate specialist profiles.
+- FR-034: The POC shall label specialist verification as a future production workflow.
 
-### 6.5 Geographic Matching
+### 7.5 Geographic Matching
 
 - FR-040: The system shall store specialist service locations as latitude/longitude coordinates.
-- FR-041: The system shall geocode patient and specialist addresses when address data is available.
+- FR-041: The POC may use pre-seeded coordinates instead of live geocoding.
 - FR-042: The system shall support nearest-neighbor search by distance from patient location.
 - FR-043: The system shall rank available specialists using distance and availability.
 - FR-044: The system shall show distance and next availability in referral matching results.
 
-### 6.6 Security, Access, and Audit
+### 7.6 Demo Experience
 
-- FR-050: The system shall authenticate all internal users.
-- FR-051: The system shall enforce role-based access control.
-- FR-052: The system shall log patient chart access, referral generation, edits, approvals, submissions, and specialist profile changes.
-- FR-053: The system shall allow compliance users to export audit records for a patient or referral.
-- FR-054: The system shall apply least-privilege access to protected health information.
+- FR-050: The POC shall include a guided demo flow that can be completed reliably.
+- FR-051: The POC shall include resettable seed data.
+- FR-052: The POC shall visually distinguish generated referral content, AI rationale, and specialist matching results.
+- FR-053: The POC shall include clear future-state labels for production-only capabilities.
 
-## 7. Non-Functional Requirements
+## 8. Non-Functional Requirements
 
-### 7.1 Privacy and Compliance
+### 8.1 POC Data Boundaries
 
-- NFR-001: The system shall protect health information in transit using TLS.
-- NFR-002: The system shall encrypt sensitive data at rest.
-- NFR-003: The system shall keep immutable audit logs for clinical access and referral actions.
-- NFR-004: The system shall support configurable data retention policies.
-- NFR-005: The system shall separate development, staging, and production data.
-- NFR-006: The system shall never use production patient data in non-production environments unless explicitly de-identified and approved.
+- NFR-001: The POC shall use synthetic or de-identified data only.
+- NFR-002: Demo data shall be easy to reset.
+- NFR-003: The POC shall avoid collecting real patient or specialist personal information during public demos.
+- NFR-004: Any live AI call shall avoid sending real PHI.
 
-### 7.2 Reliability
+### 8.2 Reliability
 
 - NFR-010: Referral creation shall fail safely when chart retrieval or AI prediction is unavailable.
 - NFR-011: Users shall be able to create manual referrals without AI service availability.
-- NFR-012: The system shall preserve draft state during partial failures.
-- NFR-013: The system shall expose operational health checks.
+- NFR-012: The demo shall include fallback seeded AI results or graceful error messaging.
+- NFR-013: The demo flow shall run locally or in a simple hosted environment without complex operations.
 
-### 7.3 Performance
+### 8.3 Performance
 
 - NFR-020: Patient search should return results within 500 ms for common queries under normal load.
-- NFR-021: Specialist matching should return ranked results within 1 second for MVP data volumes.
+- NFR-021: Specialist matching should return ranked results within 1 second for POC data volumes.
 - NFR-022: AI-assisted draft generation should complete within 30 seconds or present progress and retry affordances.
 
-### 7.4 Observability
+### 8.4 Maintainability
 
-- NFR-030: The system shall emit structured logs for API requests, referral workflow events, and AI service calls.
-- NFR-031: The system shall track metrics for referral generation latency, AI prediction confidence distribution, matching latency, and submission failures.
-- NFR-032: The system shall support trace IDs across frontend, backend, AI, and integration calls.
+- NFR-030: The codebase shall keep demo fixtures separate from application logic.
+- NFR-031: The system shall use automated tests for the highest-value demo logic where practical.
+- NFR-032: The architecture should leave room for future authentication, audit logging, and real integrations.
 
-### 7.5 Maintainability
+## 9. System Architecture
 
-- NFR-040: The system shall keep API contracts versioned.
-- NFR-041: The system shall use automated tests for core workflow behavior.
-- NFR-042: Architecture decisions shall be documented as ADRs when material tradeoffs are made.
+### 9.1 Proposed POC Components
 
-## 8. System Architecture
-
-### 8.1 Proposed MVP Components
-
-- Web frontend: Clinician, admin, specialist, and system admin user interfaces.
-- API backend: Authenticated REST or JSON API for referral, patient, specialist, and matching workflows.
-- Relational database: Core transactional data with geospatial indexing support.
+- Web frontend: Clinician/admin demo view, specialist registration view, and specialist map/list.
+- API backend: Lightweight JSON API for patient, referral, specialist, and matching workflows.
+- Data store: Simple relational database, embedded database, or JSON fixtures depending on selected stack.
 - AI service adapter: Boundary around model calls, prompt templates, safety checks, and provenance logging.
-- Chart ingestion adapter: EMR connector, upload parser, or development fixture provider.
-- Geocoding adapter: Converts addresses to coordinates.
-- Notification adapter: Email/fax/API submission placeholders depending on jurisdiction and clinic integration.
+- Chart fixture provider: Supplies seeded patient histories.
+- Distance adapter: Computes distance from pre-seeded coordinates.
 
-### 8.2 Architecture Diagram
+### 9.2 Architecture Diagram
 
 ```mermaid
 flowchart LR
-  Clinician["Physician/Admin Web UI"] --> API["ReferOn API"]
+  Clinician["Physician/Admin Demo UI"] --> API["ReferOn POC API"]
   Specialist["Specialist Registration UI"] --> API
-  SysAdmin["System Admin UI"] --> API
+  Demo["Demo Seed Controls"] --> API
 
-  API --> Auth["Auth/RBAC"]
-  API --> DB[("Relational DB + Geospatial Index")]
-  API --> Audit[("Audit Log")]
-  API --> Chart["Chart Ingestion Adapter"]
+  API --> Store[("POC Data Store")]
+  API --> Chart["Seeded Chart Fixtures"]
   API --> AI["AI Specialty Prediction Adapter"]
-  API --> Geo["Geocoding/Distance Adapter"]
-  API --> Notify["Referral Submission/Notification Adapter"]
+  API --> Geo["Distance/Matching Adapter"]
 
-  Chart --> EMR["EMR or Uploaded Chart Source"]
   AI --> Model["AI Model Provider"]
-  Geo --> Maps["Maps/Geocoding Provider"]
-  Notify --> External["Specialist Clinic Channel"]
+  Geo --> Map["Map/List UI"]
 ```
 
-### 8.3 Referral State Diagram
+### 9.3 POC Referral State Diagram
 
 ```mermaid
 stateDiagram-v2
   [*] --> draft
-  draft --> pending_review: ready for physician review
-  pending_review --> draft: needs edits
-  pending_review --> approved: physician approves
-  approved --> submitted: sent to specialist
-  submitted --> accepted: specialist accepts
-  submitted --> declined: specialist declines
-  accepted --> completed: referral fulfilled
-  draft --> cancelled
-  pending_review --> cancelled
-  approved --> cancelled
-  submitted --> cancelled
+  draft --> previewed: referral preview generated
+  previewed --> selected_specialist: specialist selected
+  selected_specialist --> draft: edit referral
 ```
 
-## 9. Data Model Draft
+## 10. Data Model Draft
 
-### 9.1 Core Entities
+### 10.1 Core POC Entities
 
 | Entity | Purpose |
 | --- | --- |
-| User | Authenticated internal user |
-| Patient | Patient demographics and location metadata |
-| ChartEntry | Imported or uploaded chart history unit |
-| Referral | Main referral record and workflow state |
+| DemoUser | Selected demo persona, not authenticated identity |
+| Patient | Seeded patient demographics and location metadata |
+| ChartEntry | Seeded chart history unit |
+| Referral | Referral draft and preview state |
 | ReferralDraftContent | Generated and edited referral content |
 | AIPrediction | Specialty prediction, confidence, rationale, model metadata |
-| Specialist | Verified or pending specialist profile |
-| SpecialistLocation | Geocoded clinic/service location |
+| Specialist | Seeded or self-registered demo specialist profile |
+| SpecialistLocation | Clinic/service location coordinates |
 | SpecialistAvailability | Intake capacity and availability windows |
-| AuditEvent | Immutable record of sensitive actions |
 
-### 9.2 Entity Relationship Sketch
+### 10.2 Entity Relationship Sketch
 
 ```mermaid
 erDiagram
-  USER ||--o{ REFERRAL : creates
-  USER ||--o{ AUDIT_EVENT : performs
+  DEMO_USER ||--o{ REFERRAL : creates
   PATIENT ||--o{ CHART_ENTRY : has
   PATIENT ||--o{ REFERRAL : has
   REFERRAL ||--o{ AI_PREDICTION : receives
@@ -276,31 +282,22 @@ erDiagram
   REFERRAL }o--o| SPECIALIST : assigned_to
   SPECIALIST ||--o{ SPECIALIST_LOCATION : serves_at
   SPECIALIST ||--o{ SPECIALIST_AVAILABILITY : publishes
-  REFERRAL ||--o{ AUDIT_EVENT : records
 ```
 
-## 10. API Definitions
+## 11. API Definitions
 
 The first implementation should treat these as draft contracts. Exact request/response schemas should be promoted into an OpenAPI spec once the backend framework is selected.
 
-### 10.1 Authentication and Users
-
-| Method | Path | Description |
-| --- | --- | --- |
-| POST | `/api/v1/auth/login` | Start authenticated session |
-| POST | `/api/v1/auth/logout` | End session |
-| GET | `/api/v1/me` | Return current user and roles |
-
-### 10.2 Patients and Charts
+### 11.1 Patients and Charts
 
 | Method | Path | Description |
 | --- | --- | --- |
 | GET | `/api/v1/patients` | Search patients |
 | GET | `/api/v1/patients/{patientId}` | Get patient summary |
 | GET | `/api/v1/patients/{patientId}/chart-entries` | Get chart history |
-| POST | `/api/v1/patients/{patientId}/chart-ingestions` | Ingest chart data |
+| POST | `/api/v1/demo/reset` | Reset seeded demo data |
 
-### 10.3 Referrals
+### 11.2 Referrals
 
 | Method | Path | Description |
 | --- | --- | --- |
@@ -310,12 +307,10 @@ The first implementation should treat these as draft contracts. Exact request/re
 | GET | `/api/v1/referrals/{referralId}` | Get referral details |
 | PATCH | `/api/v1/referrals/{referralId}` | Update referral draft |
 | POST | `/api/v1/referrals/{referralId}/predict-specialty` | Re-run specialty prediction |
-| POST | `/api/v1/referrals/{referralId}/submit-for-review` | Move draft to review |
-| POST | `/api/v1/referrals/{referralId}/approve` | Physician approval |
-| POST | `/api/v1/referrals/{referralId}/submit` | Submit to selected specialist |
-| POST | `/api/v1/referrals/{referralId}/cancel` | Cancel referral |
+| POST | `/api/v1/referrals/{referralId}/preview` | Generate ready-to-send preview |
+| POST | `/api/v1/referrals/{referralId}/select-specialist` | Attach selected specialist |
 
-### 10.4 Specialist Registry and Matching
+### 11.3 Specialist Registry and Matching
 
 | Method | Path | Description |
 | --- | --- | --- |
@@ -323,23 +318,21 @@ The first implementation should treat these as draft contracts. Exact request/re
 | GET | `/api/v1/specialists` | Search specialists |
 | GET | `/api/v1/specialists/{specialistId}` | Get specialist profile |
 | PATCH | `/api/v1/specialists/{specialistId}` | Update specialist profile |
-| POST | `/api/v1/specialists/{specialistId}/verify` | Admin verifies profile |
-| POST | `/api/v1/specialists/{specialistId}/suspend` | Admin suspends profile |
 | GET | `/api/v1/referrals/{referralId}/specialist-matches` | Get ranked specialist matches |
 
-### 10.5 Example: AI-Assisted Referral Request
+### 11.4 Example: AI-Assisted Referral Request
 
 ```json
 {
   "patientId": "pat_123",
-  "triggeredByUserId": "usr_456",
+  "demoPersona": "physician",
   "chartWindowDays": 180,
   "urgency": "routine",
   "additionalInstructions": "Consider recent knee imaging and persistent pain notes."
 }
 ```
 
-### 10.6 Example: AI-Assisted Referral Response
+### 11.5 Example: AI-Assisted Referral Response
 
 ```json
 {
@@ -357,131 +350,136 @@ The first implementation should treat these as draft contracts. Exact request/re
 }
 ```
 
-## 11. AI Design Notes
+## 12. AI Design Notes
 
-### 11.1 AI Responsibilities
+### 12.1 AI Responsibilities
 
 - Classify likely specialty or subspecialty.
 - Draft referral summary sections from cited chart entries.
 - Identify missing information that may block referral acceptance.
 - Suggest urgency only as decision support with explicit review requirement.
 
-### 11.2 Guardrails
+### 12.2 POC Guardrails
 
 - Require source references for clinical claims.
 - Refuse unsupported clinical assertions.
 - Keep generated text editable and visibly marked as AI-assisted until reviewed.
-- Log user changes after AI output.
+- Use synthetic or de-identified chart content only.
 - Include confidence thresholds for review emphasis:
   - high: 0.80 and above,
   - medium: 0.50 to 0.79,
   - low: below 0.50 requiring manual specialty selection.
 
-### 11.3 Evaluation
+### 12.3 Evaluation
 
-- Build a de-identified test set of historical referral scenarios.
+- Build a small synthetic or de-identified test set of referral scenarios.
 - Track top-1 and top-3 specialty accuracy.
 - Track unsafe or unsupported generated statements.
 - Review model performance by specialty class to detect blind spots.
 
-## 12. Security and Privacy Model
+## 13. Future Security and Privacy Model
 
-- Authentication should use an established identity provider where practical.
-- Authorization should be role-based with patient-context checks.
-- Audit logs must be append-only from the application perspective.
-- PHI must be redacted from general application logs.
-- Secrets must be stored in managed secret storage, not source control.
-- AI provider integration must be configured so patient data is not retained for provider training unless explicitly permitted by contract and policy.
-- Production access should require MFA for internal users.
+Security, privacy, and identity are intentionally deferred from the hackathon POC so the team can demonstrate business value first. They remain mandatory for any pilot or production use.
 
-## 13. Test Methodology
+Future implementation must include:
 
-### 13.1 Test Pyramid
+- Authentication through an established identity provider.
+- Organization accounts and role-based access control.
+- Patient-context authorization checks.
+- Append-only audit logs for clinical actions.
+- PHI redaction from application logs.
+- Managed secret storage.
+- AI provider configuration that prevents patient data retention for provider training unless explicitly permitted.
+- MFA for production internal users.
+- Data retention, consent, and privacy policy controls.
 
-- Unit tests for matching logic, referral state transitions, permission checks, and AI adapter parsing.
-- Integration tests for API endpoints, database persistence, geospatial search, and chart ingestion.
-- Contract tests for AI adapter response schema and EMR/geocoding adapters.
-- End-to-end tests for referral creation, review, specialist registration, verification, and matching.
-- Security tests for authorization boundaries and PHI leakage in logs.
+## 14. Test Methodology
 
-### 13.2 Clinical Safety Testing
+### 14.1 POC Test Pyramid
+
+- Unit tests for matching logic, referral state transitions, and AI adapter parsing.
+- Integration tests for API endpoints, demo data persistence, seeded chart retrieval, and geospatial search.
+- Contract tests for AI adapter response schema and distance/matching responses.
+- End-to-end tests for the demo path: patient selection, referral creation, AI prediction, specialist registration, and matching.
+
+### 14.2 Clinical Safety Testing
 
 - Golden-case referral scenarios with expected specialty outputs.
 - Adversarial chart entries with ambiguous or conflicting symptoms.
 - Missing-data scenarios where the system must warn instead of overconfidently generating.
 - Human review checklist for AI-generated referral drafts.
 
-### 13.3 Acceptance Criteria for MVP
+### 14.3 Acceptance Criteria for POC
 
-- A physician can create a referral draft from patient chart history.
-- An admin can manually create a referral draft for physician review.
+- A demo physician can create a referral draft from seeded chart history.
+- A demo admin can manually create a referral draft.
 - AI prediction returns specialty, confidence, rationale, and source references.
-- A specialist can self-register and remain unavailable for matching until verified.
-- Verified specialists can be ranked by specialty fit, distance, and availability.
-- All sensitive actions are visible in audit history.
-- Manual workflow remains usable when AI service is unavailable.
+- A specialist can self-register and appear in the demo directory.
+- Specialists can be ranked by specialty fit, distance, and availability.
+- The referral preview is compelling enough to show business value.
+- Manual workflow remains usable when AI service is unavailable or mocked.
 
-## 14. Initial Implementation Plan
+## 15. Initial Implementation Plan
 
-### Phase 0: Foundations
+### Phase 0: POC Foundations
 
 - Choose application stack.
-- Add OpenAPI contract.
-- Establish database schema and migrations.
-- Implement authentication/RBAC skeleton.
+- Add lightweight API contract.
+- Establish seeded demo data model.
 - Create seed data for patients, chart entries, and specialists.
+- Build demo reset flow.
 
-### Phase 1: Referral Drafting
+### Phase 1: Referral Drafting Demo
 
 - Build patient search and chart summary.
 - Build manual referral creation.
-- Build referral state machine.
-- Build physician review and approval flow.
+- Build AI-assisted draft creation.
+- Build referral preview.
 
-### Phase 2: AI Assistance
+### Phase 2: AI Assistance and Explainability
 
 - Implement AI adapter boundary.
 - Add specialty prediction endpoint.
-- Add AI provenance records.
 - Add chart reference display.
 - Add manual override flow.
 
-### Phase 3: Specialist Registry and Matching
+### Phase 3: Specialist Registry and Matching Demo
 
 - Build specialist self-registration.
-- Build admin verification.
-- Add geocoded specialist locations.
+- Add seeded specialist locations.
 - Implement nearest-neighbor matching.
 - Add availability-aware ranking.
+- Add map/list presentation.
 
-### Phase 4: Hardening
+### Phase 4: Demo Polish
 
-- Add audit export.
-- Add observability.
-- Add security tests.
-- Add clinical evaluation set.
-- Prepare deployment pipeline.
+- Tighten the board-facing user flow.
+- Add empty/error/loading states.
+- Add a small evaluation set for demo cases.
+- Add a future roadmap view or slide-friendly summary.
 
-## 15. Open Questions
+## 16. Open Questions
 
-- What jurisdiction and privacy framework should be assumed first?
-- Which EMR or chart source should the MVP target?
-- Should referrals be submitted by fax, secure email, direct API, or manual export in the first version?
+- What story should the demo optimize for: investor pitch, physician workflow, or faculty evaluation?
+- Which 2-3 patient scenarios best show the value?
+- Should the AI call be live, mocked, or hybrid for demo reliability?
+- What geography should the specialist map use?
 - What specialist taxonomy should be canonical?
-- Who verifies specialist identity and licensing?
-- Is patient consent required at referral creation, submission, or both?
 - What distance metric should be used initially: straight-line distance, driving distance, or travel time?
 - Should availability be self-reported, integrated from calendars, or manually managed?
+- Which production controls should be shown as future roadmap items in the UI?
 
-## 16. Decision Log
+## 17. Decision Log
 
 | Date | Decision | Rationale |
 | --- | --- | --- |
 | 2026-06-18 | Use document-driven development with this master document as the initial source of truth. | Align product, architecture, APIs, and tests before implementation starts. |
 | 2026-06-18 | Treat AI as clinician-facing decision support, not autonomous clinical decision-making. | Preserve clinical accountability and reduce safety risk. |
-| 2026-06-18 | Require specialist verification before matching. | Avoid routing referrals to untrusted or incomplete profiles. |
+| 2026-06-18 | Scope the first build as a hackathon POC rather than production MVP. | Focus the demo on business value and product clarity. |
+| 2026-06-18 | Defer user identity, RBAC, production security, and audit logging. | These are critical for production but would distract from the first proof of value. |
+| 2026-06-18 | Use seeded synthetic or de-identified chart data for the POC. | Avoid privacy risk while keeping the demo realistic. |
 
-## 17. Document Maintenance Rules
+## 18. Document Maintenance Rules
 
 - Update this document when requirements, API contracts, architecture, data model, or test methodology materially change.
 - Add ADRs for decisions that are too detailed or contentious for the decision log.
