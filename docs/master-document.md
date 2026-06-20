@@ -137,8 +137,7 @@ These are demo personas, not production security roles.
    - distance from patient,
    - next available appointment or intake capacity,
    - specialty fit (including case type and procedure match).
-
-## 7. Functional Requirements
+4. Patient can choose favorite specialists from matching results.
 
 ### 7.1 Patient and Chart History
 
