@@ -17,7 +17,7 @@ The POC is designed for hackathon demonstration to non-technical investors, phys
 - Use recent chart history to suggest the most relevant specialist type.
 - Show a physician/admin-facing manual trigger for referral creation.
 - Show a simple specialist self-registration flow.
-- Match referrals to nearby specialists using specialty, geography, and availability.
+- Match referrals to nearby specialists using specialty and subspecialty fit (including accepted case types and procedures), geography, and availability.
 - Tell a clear demo story: chart review to AI suggestion to referral draft to matched specialist.
 
 ## 3. POC Strategy
@@ -56,7 +56,7 @@ Physicians and clinic administrators lose time converting chart history into spe
 - Referral preview and lightweight edit flow.
 - Specialist self-registration and profile management.
 - Specialist location capture and nearest-neighbor search.
-- Availability-aware specialist matching.
+- Specialty- and case-type-aware specialist matching with availability.
 - Map/list visualization of candidate specialists.
 - API-first structure where useful, without overbuilding production infrastructure.
 
@@ -121,7 +121,7 @@ These are demo personas, not production security roles.
 ### 6.3 Specialist Self-Registration
 
 1. Specialist opens registration page.
-2. Specialist submits name, clinic, specialty, location, contact, referral criteria, and availability.
+2. Specialist submits name, clinic, specialty, location, contact, accepted case types, referral types, and specific procedures or surgeries, and availability.
 3. System creates a demo specialist profile.
 4. Profile becomes visible in the demo matching directory.
 
@@ -130,12 +130,13 @@ These are demo personas, not production security roles.
 1. System receives referral specialty, patient location, urgency, constraints, and optional preferences.
 2. System filters specialists by:
    - specialty and subspecialty,
+   - accepted case types, referral types, and specific procedures or surgeries,
    - accepting-new-referrals flag,
    - availability window.
 3. System ranks candidates by:
    - distance from patient,
    - next available appointment or intake capacity,
-   - specialty fit.
+   - specialty fit (including case type and procedure match).
 
 ## 7. Functional Requirements
 
@@ -169,7 +170,7 @@ These are demo personas, not production security roles.
 
 - FR-030: The system shall allow specialists to self-register.
 - FR-031: The POC shall immediately show registered specialists in the demo directory.
-- FR-032: The system shall capture specialty, subspecialty, clinic name, service locations, contact methods, accepted referral types, and availability.
+- FR-032: The system shall capture specialty, subspecialty, clinic name, service locations, contact methods, accepted case types, referral types, and specific procedures or surgeries, and availability.
 - FR-033: The system shall allow specialists to update availability and accepting-referrals status.
 - FR-034: The POC shall label specialist verification as a future production workflow.
 
