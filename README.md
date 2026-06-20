@@ -66,7 +66,7 @@ npm run dev   # runs: vite --host
 Built at a healthcare AI hackathon by:
 
 - 🧠 **Souheil Yazji** ([@Souheil-Yazji](https://github.com/Souheil-Yazji))
-- 🩺 Sana Musa
+- 🩺 **Sana Musa**
 - ⚙️ **Anas Abushaikha** ([@anasabushaikha](https://github.com/anasabushaikha))
 - 🎨 **Jason Au** ([@sightsontheheights](https://github.com/sightsontheheights))
 
